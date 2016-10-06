@@ -1,0 +1,45 @@
+apply plugin: 'continuousdelivery'
+apply plugin: 'reportarchiver'
+
+// lets differentiate between the builds of master and the PR builds.
+def branch = System.getProperty("FROM_BRANCH", "master")
+
+def projectName = "${project.name}"
+def racks = ['junit', 'cobertura', 'pmd', 'findbugs', 'checkstyle']
+def reports = [
+        junit: "${project.extensions.getByName('reportArchiver').getArchiveDestination()}/junit-results.tar.gz",
+        cobertura: "${project.buildDir}/reports/cobertura/coverage.xml",
+        pmd: "${project.buildDir}/reports/pmd/main.xml",
+        findbugs: "${project.buildDir}/reports/findbugs/main.xml",
+        checkstyle: "${project.buildDir}/reports/checkstyle/main.xml"
+]
+
+// the below block is for setting or overriding config specific to pull request analysis
+if (! branch.equalsIgnoreCase('master')) {
+    projectName += "-pull-request-analysis"
+    racks = ['junit', 'cobertura', 'pmd', 'findbugs', 'checkstyle']
+
+    // For PRA we don't want the build to fail on failures.
+    // We want to be able to collect them and inject them back into the Pull Request.
+    checkstyle {
+        ignoreFailures = true
+    }
+    findbugs {
+        ignoreFailures = true
+    }
+    pmd {
+        ignoreFailures = true
+    }
+    test {
+        ignoreFailures = true
+    }
+}
+
+continuousDelivery {
+    setProjectName projectName
+    setRacks(racks)
+    setPhaseOneReports(reports)
+}
+
+tasks.tarJunitResults.dependsOn check
+tasks.cdExecuteAndAnalyzePhaseOneReports.dependsOn tarJunitResults

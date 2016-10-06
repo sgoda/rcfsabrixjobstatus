@@ -1,0 +1,23 @@
+allprojects {
+    group = "com.nike.rcfsabrixjobstatus"
+
+    repositories {
+        mavenLocal()
+        maven {
+            credentials {
+                username 'maven'
+                password 'ludist'
+            }
+            url 'http://repo.nikedev.com:8081/artifactory/all-repos'
+        }
+    }
+}
+
+apply plugin: 'blueprint'
+apply plugin: 'serviceapis'
+apply from: file('gradle/check.gradle')
+apply from: file('gradle/integration.gradle')
+
+dependencies {
+    apply from: file('gradle/blueprint/blueprint.deps'), to: dependencies
+}

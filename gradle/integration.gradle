@@ -1,0 +1,27 @@
+tasks.withType(Test) {
+    systemProperty 'integration.server', System.getProperty('integration.server', 'localhost')
+    systemProperty 'integration.port', System.getProperty('integration.port', '8080')
+}
+
+sourceSets {
+    integration {
+        java.srcDir file('src/integration/java')
+        resources.srcDir file('src/integration/resources')
+    }
+}
+
+task integration(dependsOn: 'jettyDaemon', type: Test, description: 'Runs integration tests') {
+    testClassesDir = sourceSets.integration.output.classesDir
+    classpath = sourceSets.integration.runtimeClasspath
+
+    finalizedBy jettyStop
+}
+
+dependencies {
+    testCompile 'com.jayway.restassured:rest-assured:2.4.0'
+
+    integrationCompile sourceSets.main.output
+    integrationCompile configurations.testCompile
+    integrationCompile sourceSets.test.output
+    integrationRuntime configurations.testRuntime
+}

@@ -1,0 +1,119 @@
+---
+# Version of the application schema
+version: 1
+
+application:
+  name: rcfsabrixjobstatus
+
+  # {rest | camel | jar | plugin}
+  type:
+
+  description:
+  owner:
+  email:
+  # May be required by asgard, check for a list of team names here - http://<asgardServerUrl>/teams/list
+  team: Your Phylon Team Name
+  stashProjectKey:
+  relayProjectCode:
+  classification: Bronze
+
+deployment:
+  jenkinsBaseUrl:
+
+  test:
+    group: Commerce
+
+    # {Standalone Application | Web Application | Web Service}
+    type: Web Service
+
+    product:
+    tags:
+
+    # {none | application | cluster}
+    monitorBucketType: cluster
+
+    pagerDutyAPIKey:
+
+    # Cluster configuration
+    cooldownInSeconds: 10
+    azRebalance: true
+    healthCheckGracePeriod: 600
+
+    # {EC2 | ELB}
+    healthCheckType: EC2
+
+    # {Default | OldestInstance, NewestInstance, OldestLauchConfiguration, ClosestToNextInstanceHour}
+    instanceTerminationPolicy: Default
+
+    trafficAllowedAtStartup: true
+    asgardServerUrl: https://test-asgard.tools.nikecloud.com
+    asg:
+      vpc: main
+      min: 3
+      max: 3
+      desiredCapacity: 3
+      # http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html
+      region:
+        -
+          name: us-east-1
+          availabilityZones:
+            - us-east-1a
+            - us-east-1b
+    launchConfiguration:
+      instanceType: t2.medium
+      sshKeyName:
+      securityGroups:
+        - sg-d13715b4
+        - sg-55e65d30
+
+  prod:
+    group: Commerce
+
+    # {Standalone Application | Web Application | Web Service}
+    type: Web Service
+
+    product:
+    tags:
+
+    # {none | application | cluster}
+    monitorBucketType: cluster
+
+    pagerDutyAPIKey:
+
+    # Cluster configuration
+    cooldownInSeconds: 10
+    azRebalance: true
+    healthCheckGracePeriod: 600
+
+    # {EC2 | ELB}
+    heathCheckType: EC2
+
+    # {Default | OldestInstance, NewestInstance, OldestLauchConfiguration, ClosestToNextInstanceHour}
+    instanceTerminationPolicy: Default
+
+    trafficAllowedAtStartup: true
+
+    asgardServerUrl: https://asgard.tools.nikecloud.com
+    asg:
+      min: 3
+      max: 3
+      desiredCapacity: 3
+      region:
+        -
+          name: us-east-1
+          availabilityZones:
+            - us-east-1a
+            - us-east-1b
+            - us-east-1d
+            - us-east-1e
+        -
+          name: us-west-1
+          availabilityZones:
+            - us-west-1a
+            - us-west-1c
+    launchConfiguration:
+      instanceType:
+      sshKeyName:
+      securityGroups:
+        - sg-d13715b4
+        - sg-55e65d30

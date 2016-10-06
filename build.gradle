@@ -1,0 +1,52 @@
+buildscript {
+    apply from: file('gradle/buildscript.gradle'), to: buildscript
+}
+
+apply from: file('gradle/blueprint.gradle')
+apply from: file('gradle/qma.gradle')
+
+dependencies {
+    // Define your service dependencies here
+}
+
+task jettyDaemon() {
+    onlyIf {
+        'localhost'.equalsIgnoreCase(System.getProperty('integration.server', 'localhost'))
+    }
+    description = 'Starts Jetty in daemon mode'
+    group = 'web application'
+    doLast {
+        project.jettyRun.daemon = true
+    }
+
+    finalizedBy jettyRun
+}
+
+jettyRun {
+    onlyIf {
+        'localhost'.equalsIgnoreCase(System.getProperty('integration.server', 'localhost'))
+    }
+    doFirst {
+        ant.replace(file: 'build/resources/main/log4j2-local.xml', token: '@@RELEASE@@', value: releaseVersion)
+    }
+
+    System.setProperty('log4j.configurationFile', 'log4j2-local.xml')
+    System.setProperty('archaius.deployment.applicationId', 'rcfsabrixjobstatus')
+    System.setProperty('archaius.deployment.region', 'us-west-2')
+    System.setProperty('archaius.deployment.version', version)
+    System.setProperty('archaius.deployment.environment', 'local')
+
+    contextPath = '/'
+    httpPort = Integer.valueOf(jettyHttpPort)
+    stopPort = Integer.valueOf(jettyStopPort)
+    stopKey = rootProject.name
+}
+
+jettyStop {
+    stopPort = Integer.valueOf(jettyStopPort)
+    stopKey = rootProject.name
+}
+
+test {
+    jvmArgs "-XX:-UseSplitVerifier"
+}

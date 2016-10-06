@@ -1,0 +1,17 @@
+repositories {
+    maven {
+        credentials {
+            username 'maven'
+            password 'ludist'
+        }
+        url 'http://repo.nikedev.com:8081/artifactory/all-repos'
+    }
+}
+
+dependencies {
+    classpath 'net.saliman:gradle-cobertura-plugin:2.2.6'
+    classpath 'com.nike.blueprint:blueprint-plugin:3.+'
+    classpath 'com.nike.gradle-continuousdelivery-plugin:gradle-continuousdelivery-plugin:2.+'
+    classpath 'com.nike.qm:gradle-reportarchiver-plugin:1+'
+    classpath 'com.nike.gradle-cd-service-apis-plugin:gradle-cd-service-apis-plugin:1+'
+}

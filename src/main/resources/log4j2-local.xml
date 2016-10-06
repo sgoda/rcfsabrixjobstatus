@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="%X{traceId} %-5p %d [%t] %c app=rcfsabrixjobstatus version=@@RELEASE@@ : %m%n"/>
+        </Console>
+
+        <Async name="AsyncSTDOUT">
+            <AppenderRef ref="STDOUT"/>
+        </Async>
+    </Appenders>
+    <Loggers>
+        <AsyncLogger name="org.apache.log4j.xml" level="info"/>
+        <AsyncLogger name="com.netflix" level="error"/>
+        <AsyncLogger name="com.nike" level="info"/>
+
+        <AsyncRoot level="info">
+            <AppenderRef ref="AsyncSTDOUT"/>
+        </AsyncRoot>
+    </Loggers>
+</Configuration>
